@@ -8,7 +8,7 @@ Figures: `results/figures/eda_*.png`. Code: `sunfix/load.py`, `sunfix/summarise.
 - 491 failed (entered repair), 536 alive (censored). Lifetime (activation to repair) is 401-761 days for failed and 403-743 for alive; the distributions overlap closely (medians 500 vs 528), as intended by Aitio's lifetime-stratified sampling of healthy batteries.
 
 ## Sampling and missing data
-- Median sampling interval 60 s for every battery (dev: 99% of intervals <= 120 s... see `eda_distributions.png`); 99th percentile of the interval is up to 625 s. Temperature is repeated between updates: ~91% of consecutive temperature values are identical, i.e. it is refreshed far less often than V and I.
+- Median sampling interval 60 s for every battery (dev: 88.6% of intervals are exactly 60 s, 95.9% are <= 120 s, 0.3% exceed 610 s; see `eda_distributions.png`). The 99th percentile of the interval is 600-625 s for the median battery, so some batteries send mostly every 10 minutes at times. Temperature is repeated between updates: ~91% of consecutive temperature values are identical, i.e. it is refreshed far less often than V and I.
 - No NaNs, no unsorted or duplicate timestamps in any battery.
 - Telemetry gaps: within the service window 155 of 1,027 batteries (101 failed, 54 alive) still have at least one gap longer than 30 days, up to 459 days. Aitio's supplement says batteries with gaps over 30 days were removed, so this file does not reflect that filter. **Flagged, kept.** Median fraction of lifetime with gaps over an hour: 2.9%; max 80%.
 - Voltage and current are coarsely quantised (about 3,700 distinct voltage values across the dev subset), which matters for the Phase 4 precision tests.
