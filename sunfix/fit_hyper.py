@@ -32,8 +32,9 @@ def neg_log_post(theta, preps, norm):
     return -(sum(lls) + prior)
 
 
-def fit(variant: str, n_each: int = 4, stride: int = 10, maxiter: int = 600, seed: int = 0):
-    m = load_meta(); ids = dev_subset()
+def fit(variant: str, n_each: int = 4, stride: int = 10, maxiter: int = 600, seed: int = 0, pool=None, out_path=None, quiet=False):
+    """pool: battery IDs to draw the n_each + n_each training batteries from (default: dev subset)."""
+    m = load_meta(); ids = dev_subset() if pool is None else list(pool)
     rng = np.random.default_rng(seed)
     failed = [i for i in ids if m.failed[i]]; alive = [i for i in ids if not m.failed[i]]
     train = sorted(rng.choice(failed, n_each, replace=False).tolist() + rng.choice(alive, n_each, replace=False).tolist())
@@ -49,8 +50,10 @@ def fit(variant: str, n_each: int = 4, stride: int = 10, maxiter: int = 600, see
     out = dict(variant=variant, train_ids=train, sf0=sf0, sf1=sf1, tau=tau, ls=list(ls), nlp=float(res.fun),
                nlp_start=float(neg_log_post(theta0, preps, norm)), evals=int(res.nfev), seconds=time.time() - t,
                norm_mean=norm.mean.tolist(), norm_std=norm.std.tolist(), basis=norm.basis.tolist())
-    (ROOT / "data" / f"hyper_{variant}.json").write_text(json.dumps(out, indent=1))
-    print(json.dumps({k: v for k, v in out.items() if k not in ("basis",)}, indent=1))
+    (out_path or ROOT / "data" / f"hyper_{variant}.json").write_text(json.dumps(out, indent=1))
+    if not quiet:
+        print(json.dumps({k: v for k, v in out.items() if k not in ("basis",)}, indent=1))
+    return out
 
 
 if __name__ == "__main__":
