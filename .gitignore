@@ -1,0 +1,9 @@
+*.zip
+*.npz
+*.npy
+*.parquet
+data/
+.venv/
+__pycache__/
+*.mpt
+external/
