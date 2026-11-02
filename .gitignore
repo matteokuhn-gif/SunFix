@@ -7,3 +7,5 @@ data/
 __pycache__/
 *.mpt
 external/
+papers/
+Aitio_and_Howey_2021_predicting_battery_end.pdf

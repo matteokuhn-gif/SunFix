@@ -1,6 +1,6 @@
 # Aitio & Howey (2021) protocol, as far as the main paper states it
 
-Source: Joule 5(12):3204-3220, read from the PDF in ~/Desktop/SEE. **The supplemental information (SI) is not in that PDF**, and one page of the PDF (p. 6 of 18, containing the start of the GP model discussion and Fig. 3) could not be text-extracted. Items marked [SI] are defined only there (health-metric derivative, stress-factor formulas, full confusion matrix, cost function Eq. S15, data selection). Fetching the SI (doi 10.1016/j.joule.2021.11.006) or the arXiv preprint 2107.13856 is the first thing to do before Phase 3.
+Sources: Joule 5(12):3204-3220 (PDF in ~/Desktop/SEE) and the arXiv-style PDF `Aitio_and_Howey_2021_predicting_battery_end.pdf` (35 pages, main text plus Supplementary Material, pp. 22-35), added by the user on 2 Nov 2026. Items marked [SI] come from the supplement. Pages 28-29 (Kalman/energy-function equations, Eq. S15) were only skimmed; they matter only if we reimplement their MAP fit, which we do not plan to.
 
 ## Data
 - 1,027 Bboxx lead-acid batteries (536 healthy, 491 failed), 400-760 days each, 620M rows. Selected so each series is >= 400 days and the classes are about balanced [SI].
@@ -47,3 +47,39 @@ Acid concentration c used as SoC. Initial c from the GITT-measured OCV(c) curve 
 - Python/PyTorch on one laptop instead of Spark, so hyperparameters will be fitted on a training subset and frozen.
 - SI-only definitions will be reconstructed and marked as such.
 - Strict out-of-fold resistance hyperparameters.
+
+
+## Additions from the Supplementary Material
+**Sensor quality:** current calibrated to 0.2%; voltage systematic uncertainty 3% (about 0.4 V on a 13 V reading), temperature 2 degC. Voltage precision therefore limits resistance estimation, which is why Phase 4's rounding tests matter.
+
+**Battery selection (S1):** single manufacturer, 20 Ah, activation after 2018-09-01, lifetime > 400 d. Failed = entered repair with a diagnosed *loss of capacity* (other repair reasons excluded). Healthy batteries were drawn by **stratified sampling on lifetime**, so the lifetime distributions of healthy and failed match by construction (this removes the cheapest age leak). Removed: telemetry gaps > 30 d, tampering alerts, bad temperature readings, batteries with < 50 qualifying charging segments, or whose last qualifying segment is > 30 d before series end. Our 1,027 files are already this filtered set.
+
+**Stress factors (S5) [SI]:**
+- age = days since activation;
+- cumulative time at float = sum of time steps in float, float defined as a period > 600 s with V in 13.4-13.6 V;
+- Ah throughput = cumulative absolute Coulomb count;
+- mean temperature and mean voltage = expanding window from beginning of life;
+- discharge cycle count = number of continuous discharge periods > 600 s with **I > 0.05 A**. So in the raw data **discharge is positive, charging negative**, which matches the dataset note; the main text's "charging positive" is the modelling convention. Phase 1 will still confirm from the data.
+
+**Hyperparameters (S4):** resistance GP hyperparameters were fitted per battery on the *zero-horizon* (longest) data, the population medians were taken, and then used for all horizons. Median values: l_T 3.96, l_I 1.94, l_c 2.79, sigma_f0 2.26, sigma_f1 0.34 (normalised inputs). Useful as starting values for our own fit.
+
+**Reference results, 48% failed test set (S6, Table 1), balanced accuracy %:**
+| Days before | R, dR/dt | R, dR/dt + stress | Benchmark | Stress only |
+|---|---|---|---|---|
+| 0 | 76 | 82 | 66 | 71 |
+| 14 | 73 | 80 | 62 | 70 |
+| 28 | 67 | 76 | 56 | 71 |
+| 42 | 64 | 76 | 51 | 69 |
+| 56 | 63 | 73 | 50 | 66 |
+At h=0 the best model has TP 389, FP 78, FN 102, TN 458 (sensitivity 79%, specificity 85%). At h=56: TP 363, FP 151, FN 128, TN 385 (sensitivity 74%, specificity 72%). Our "4 weeks" target is the 28-day row (76%); the brief's "8 weeks" is 56 days (73%).
+
+**Their own minimum-data result (S, Table 2), mean accuracy over test cases:**
+| Case | Benchmark | R, dR/dt | R, dR/dt + stress | Stress only |
+|---|---|---|---|---|
+| baseline (1 min, ~260 segments) | 57 | 69 | 77 | 69 |
+| 100 segments | 58 | 67 | 76 | 69 |
+| 50 segments | 57 | 66 | 75 | 69 |
+| 2 / 5 / 10 min interpolation | 58 | 70-71 | 78 | 69-70 |
+So within their pipeline, coarser interpolated sampling and fewer segments cost almost nothing. Caveat for Phase 4: this is *interpolation* of already-selected 1-min-capable charging segments (they still required max gaps < 610 s), not real low-rate telemetry. Our experiments should thin the raw data before segment selection.
+
+**Strong baseline to beat honestly:** stress factors alone reach 66-71%. The resistance features add roughly 5-11 points on top. Our 70% "useful" threshold in Phase 4 is therefore barely above what usage statistics alone achieve in this dataset. I will report a stress-only baseline in every Phase 4 row so the value of the resistance estimate is visible.
