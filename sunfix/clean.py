@@ -8,7 +8,7 @@ from scipy.interpolate import PchipInterpolator
 
 from .load import ROOT, cached_raw, load_meta
 
-SEG_DIR = ROOT / "data" / "segments"
+SEG_DIR = ROOT / "data" / "segments_v2"
 
 V_MIN, V_MAX = 9.0, 16.0   # physically impossible outside this for a 12 V VRLA (observed 0 V and up to 20 V)
 CHG_I = -0.05              # A, below this the battery counts as charging
@@ -64,7 +64,9 @@ def charging_segments(d: pd.DataFrame, criteria: dict = SEG) -> list[tuple[int, 
 
 
 def interpolate_segment(d: pd.DataFrame, a: int, b: int) -> pd.DataFrame:
-    """Truncate at first V > 14 V, PCHIP-interpolate to a 1-min grid, drop |I| < 0.2 A."""
+    """Truncate at first V > 14 V and PCHIP-interpolate to a 1-min grid. The |I| < 0.2 A filter is applied
+    later (sunfix.soc) because Coulomb counting needs the low-current rows. Adds v_start, the rest voltage
+    before the segment."""
     s = d.iloc[a:b]
     over = np.flatnonzero(s.V.to_numpy() > V_TRUNC)
     if len(over):
@@ -78,12 +80,13 @@ def interpolate_segment(d: pd.DataFrame, a: int, b: int) -> pd.DataFrame:
     out = pd.DataFrame({"t": g})
     for c in ("I", "V", "T"):
         out[c] = PchipInterpolator(t, s[c].to_numpy())(g)
-    return out[out.I < -MIN_I_ABS].reset_index(drop=True)
+    out["v_start"] = d.V.iloc[a - 1]
+    return out
 
 
 def segments_for(batt_id: int, meta: pd.DataFrame | None = None, cache: bool = True) -> pd.DataFrame:
     """All qualifying, interpolated charging segments of a battery with a `seg` column."""
-    path = SEG_DIR / f"{batt_id}.parquet"
+    path = SEG_DIR / f"{batt_id}.parquet"  # v2: unfiltered grid + v_start
     if cache and path.exists():
         return pd.read_parquet(path)
     d = clean_raw(batt_id, meta)
@@ -92,7 +95,7 @@ def segments_for(batt_id: int, meta: pd.DataFrame | None = None, cache: bool = T
         s = interpolate_segment(d, a, b)
         if len(s):
             parts.append(s.assign(seg=k))
-    res = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=["t", "I", "V", "T", "seg"])
+    res = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=["t", "I", "V", "T", "v_start", "seg"])
     if cache:
         SEG_DIR.mkdir(parents=True, exist_ok=True)
         res.to_parquet(path, index=False)
