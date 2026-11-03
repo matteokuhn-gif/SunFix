@@ -18,3 +18,9 @@ Sessions 1-4 were not logged at the time. Entries below were reconstructed on 20
 **Goal:** reconcile documents (CLAUDE.md, LOG.md, METHODOLOGY.md were never created), publish repo to GitHub, design and start Phase 4.
 **Done:** created the three documents; see below for continuation.
 **Problems / surprises:** the three files were missing although expected; reconstructed. The original brief was missing from the folder until the user added it.
+**Done:** Phase 4 harness (`sunfix/phase4.py`, `phase4_report.py`), 15 scenarios on a 40% stratified subsample; report `docs/phase4_report.md`; repo pushed to GitHub (private, matteokuhn-gif/SunFix).
+**Results:** no scenario measurably below native (full model 77-81% at 28 d vs 78% native, +-4 pt); usage-only 61-72%; one daily record gives 79% (subsample) / 75% (full data, 56 d: 70.8%). `results/minimum_data_table_sub40.csv`, `results/figures/phase4_minimum_data_sub40.png`.
+**Problems / surprises:** joblib workers did not see runtime-registered feature sets (moved to `features.SETS`); empty 30-day windows crashed stress features (guard added). Run crashed once and was restarted; finished scenarios were kept.
+**Decisions:** subsample, daily proxy, gap scaling (see METHODOLOGY.md).
+**Next:** Phase 5 REPORT.md; optionally a combined cheap-device scenario and a full-data run of the key scenarios; Phase 6.
+**Commit:** see git log

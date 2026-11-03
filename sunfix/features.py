@@ -41,6 +41,8 @@ def stress_features(batt_id: int, m: pd.DataFrame | None = None, horizons=HORIZO
     """d / t_end: optional degraded frame and native series end (Phase 4); default is native cleaned data."""
     m = m if m is not None else load_meta()
     d = clean_raw(batt_id, m) if d is None else d
+    if len(d) < 2:   # empty history window (telemetry gap): no reading
+        return pd.DataFrame([dict(ID=batt_id, h=h) for h in horizons])
     t, I, V, T = (d[c].to_numpy() for c in ("t", "I", "V", "T"))
     dt = np.minimum(np.r_[np.diff(t), 0.0], DT_CAP)
     cum_dt = np.cumsum(dt)

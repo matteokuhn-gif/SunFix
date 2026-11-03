@@ -14,6 +14,8 @@ USAGE = {"stress_only", "stress_only_noT", "stress_only_daily"}
 def build():
     parts = ([native_row()] if FRAC >= 1 else []) + [pd.read_csv(OUT / f"{n}.csv") for n in SCENARIOS if (OUT / f"{n}.csv").exists()]
     r = pd.concat(parts, ignore_index=True)
+    r.loc[r.scenario == "daily_summary", "samples_per_day"] = 1.0                 # one record per day
+    r.loc[r.scenario.str.startswith("history"), "samples_per_day"] = np.nan        # history scenarios keep the native rate
     r["role"] = np.where(r.set.isin(FULL), "full", np.where(r.set.isin(USAGE), "usage_only", np.where(r.set == "age_only", "age_only", "resistance_only")))
     cols = ["scenario", "group", "h", "set", "role", "model", "balanced_acc", "ba_lo", "ba_hi", "sensitivity", "specificity", "precision",
             "false_alarms_per_1000_per_month", "coverage", "samples_per_day"]

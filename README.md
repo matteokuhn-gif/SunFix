@@ -10,7 +10,7 @@ Applies BattGP (Schaeffer et al. 2024) to the Bboxx lead-acid dataset of Aitio &
 | 1 Data pipeline and EDA | done | docs/eda_report.md |
 | 2 Resistance model (dev subset of 60) | done | docs/phase2_report.md |
 | 3 EOL prediction, all 1,027 batteries | done | docs/phase3_report.md |
-| 4 Minimum-data experiments | **not started** | |
+| 4 Minimum-data experiments (40% subsample) | done | docs/phase4_report.md |
 | 5 REPORT.md | not started | |
 
 ## Setup
@@ -23,4 +23,5 @@ Package is `sunfix/` (not `src/`) because BattGP imports a top-level `src`.
 - Added a per-segment random offset to the resistance model. See docs/phase2_report.md for all deviations.
 - `stale_days`/`unc` features leak (data availability) and are excluded from the headline set.
 - Headline: balanced accuracy 81 / 79 / 74 % at 0 / 28 / 56 days (paper 82 / 76 / 73).
+- Phase 4 (40% subsample, +-4 pt intervals): no tested degradation (5 min to 1 h sampling, daily summaries, no temperature, 30-180 d history, rounding, 10-50% packet loss) measurably hurt the 28-day warning (77-81% vs 78% native); usage-only is 61-72%. Smallest passing spec: one daily record (79% subsample, 75% full data). Combinations untested.
 - Generated data lives in `data/` (git-ignored, about 6 GB): parquet cache, segments, resistance trajectories, per-fold hyperparameters.

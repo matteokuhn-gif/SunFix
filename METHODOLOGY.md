@@ -30,7 +30,7 @@ Reconstructed on 2026-11-03 from the git history, `docs/` reports and code, beca
 Balanced accuracy (headline), sensitivity, specificity, precision, false alarms per 1,000 per month, Brier, ECE, 95% bootstrap CI, fold-to-fold sd. Usage-only baseline (about 70.5%) is reported alongside every result.
 
 ## Minimum-data experiment design (Phase 4)
-See Decisions entry of 2026-11-03 and `docs/phase4_design.md`.
+Single-factor degradations of the cleaned data, scenario list and implementation in `sunfix/phase4.py`; details, limitations and results in `docs/phase4_report.md`. Decision times fixed from native data; Phase 3 per-fold hyperparameters reused (refit only without temperature); h = 28 and 56.
 
 ## Assumptions and limitations
 Lead-acid, not LFP; one manufacturer; alive batteries are censored; labels are customer repair decisions, not confirmed battery faults; hyperparameters poorly determined by 8 batteries; CC BY-NC data (research use only).
@@ -40,3 +40,6 @@ Lead-acid, not LFP; one manufacturer; alive batteries are censored; labels are c
 - **2026-11-02 (Phase 2)** 5-min grid instead of 1-min for speed; Aitio Table 2 reports no loss.
 - **2026-11-02 (Phase 3)** Truncate failed batteries at the repair date. Per-fold hyperparameters to avoid test leakage. `unc` and `stale_days` excluded (data-availability leak; `stale_days` alone gives 69% at h = 0).
 - **2026-11-03 (Phase 4)** Documents `CLAUDE.md`, `LOG.md`, `METHODOLOGY.md` reconstructed; repo published to GitHub (private) so it is accessible and sharable. Code-only: data stays out of git (CC BY-NC).
+- **2026-11-03 (Phase 4)** Ran all scenarios on a fixed stratified 40% subsample of batteries (seed 0) with the Phase 3 folds restricted to it, instead of all 1,027, to cut runtime from about 70 to about 25 minutes. Alternative: full run (rejected for time). Cost: intervals of about +-4 points. Full-data runs exist only for 5-min sampling and daily summaries.
+- **2026-11-03 (Phase 4)** Daily-summary scenario uses a proxy (Vmax-Vmin)/(Imax-Imin) because the resistance GP needs charging curves. Segment gap limit scaled to 2.5x the sampling interval for thinned data. Short-history baseline for relative level = first quarter of the visible window.
+- **2026-11-03 (Phase 4)** Empty history windows (telemetry gaps) count as "no reading" (median-imputed; coverage column reports the share with a reading).
