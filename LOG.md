@@ -1,0 +1,20 @@
+# Lab notebook (append-only)
+
+Sessions 1-4 were not logged at the time. Entries below were reconstructed on 2026-11-03 from git history and are marked (reconstructed).
+
+## 2026-11-02 19:23 – Session 1 (Phase 0) (reconstructed)
+**Goal:** setup, BattGP and Aitio notes. **Done:** repo, venv, `docs/battgp_notes.md`, `docs/aitio_protocol.md`. **Commit:** 93cf3f8, 9b379b0
+
+## 2026-11-02 19:33 – Session 2 (Phase 1) (reconstructed)
+**Goal:** data pipeline. **Done:** loader, cleaning, Aitio segment extraction, EDA (`docs/eda_report.md`). **Commit:** bbea8e2, 9e2b6d8
+
+## 2026-11-02 19:46 – Session 3 (Phase 2) (reconstructed)
+**Goal:** BattGP resistance model on 60 dev batteries. **Results:** `docs/phase2_report.md`; ocv variant predicts voltage 26% better than nocv; 0.76 s/battery. **Decisions:** per-segment offset. **Commit:** aad7bee
+
+## 2026-11-02 20:13 – Session 4 (Phase 3) (reconstructed)
+**Goal:** EOL prediction on all 1,027 batteries. **Results:** balanced accuracy 81 / 79 / 79 / 76 / 74% at h = 0/14/28/42/56 (paper 82/80/76/76/73); usage-only about 70.5%. **Problems:** `stale_days` leak found and removed. **Commit:** 531d19e
+
+## 2026-11-03 – Session 5 (Phase 4 start)
+**Goal:** reconcile documents (CLAUDE.md, LOG.md, METHODOLOGY.md were never created), publish repo to GitHub, design and start Phase 4.
+**Done:** created the three documents; see below for continuation.
+**Problems / surprises:** the three files were missing although expected; reconstructed. The original brief was missing from the folder until the user added it.
