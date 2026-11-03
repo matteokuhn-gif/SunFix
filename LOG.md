@@ -50,3 +50,12 @@ Sessions 1-4 were not logged at the time. Entries below were reconstructed on 20
 **Problems / surprises:** only five months of at-risk test data, so seasonality is confounded with age. Cited Adnan et al. numbers not reproducible from p^N; definition unverified.
 **Next:** 6d: LFP transfer on the BattGP field set. Needs approval for a 1.7 GB download (Zenodo 13715694, CC BY-NC 4.0).
 **Commit:** see git log
+
+## 2026-11-03 – Session 6 continued (Phase 6d.1)
+**Goal:** download BattGP LFP data (approved by the user: 1.7 GB) and reproduce per-cell fault probabilities for systems 3, 6, 9.
+**Done:** download + MD5 check, data made read-only; `sunfix/lfp_reproduce.py`; ran systems 3, 9, 6 (13 s, 36 s, 2.3 min; peak 6.5 GB); `docs/phase6d_report.md`.
+**Results:** relative band probabilities flag cell 8 (system 6) and cell 2 (system 9); system 3 no clear fault. 28 vs 29: zip has 28; BattGP runner loops 1-29. Sampling median 5 s.
+**Problems / surprises:** paper not readable by the fetch agent (HTTP 403), no local copy, so comparison with the paper's numbers is NOT done. Absolute-threshold probability saturates at 1.0 for all cells.
+**Decisions:** none new methodologically; BattGP run unchanged with its shipped settings.
+**Next:** obtain the paper (user to supply PDF); then 6d.2 pack-only ablation.
+**Commit:** see git log

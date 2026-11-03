@@ -15,7 +15,8 @@ Applies BattGP (Schaeffer et al. 2024) to the Bboxx lead-acid dataset of Aitio &
 | 6a Cost-aware evaluation (hypothetical costs) | done | docs/phase6a_report.md |
 | 6b Benchmark models | done | docs/phase6b_report.md |
 | 6c Conformal gate, persistence | done | docs/phase6c_report.md |
-| 6d-6g LFP transfer, RWTH, priors, write-up | not started (6d needs download approval) | PHASE6_PROMPT.md |
+| 6d LFP transfer | in progress: data downloaded, BattGP reproduction runs, paper comparison pending | docs/phase6d_report.md |
+| 6e-6g RWTH, priors, write-up | not started | PHASE6_PROMPT.md |
 
 ## Setup
 Needs the raw `set_*.zip`, `meta_data.csv`, `GITT_OCV.mpt` in this folder (not in git) and `external/BattGP` cloned (commit 6d5e1db, not in git: `git clone https://github.com/JoachimSchaeffer/BattGP external/BattGP`). Python 3.12 venv with `uv pip install -r requirements.txt`. Run `make all`.
@@ -23,7 +24,7 @@ Package is `sunfix/` (not `src/`) because BattGP imports a top-level `src`.
 
 ## Data licences
 - Bboxx / Aitio & Howey 2021: CC BY-NC 4.0, research only (patent application GB 2105995.1). Raw data is not in git.
-- BattGP LFP field data (Zenodo 13715694): CC BY-NC 4.0, research only (not yet downloaded).
+- BattGP LFP field data (Zenodo 13715694): CC BY-NC 4.0, research only. Downloaded 2026-11-03 to data/battgp_lfp/ (read-only, MD5 verified, not in git).
 - RWTH home storage (Zenodo 12091223): CC BY 4.0 (not yet downloaded). Sandia / HUST / MATR: verify before use.
 - Operating costs in `config/costs.yaml` are hypothetical placeholders; results based on them are not findings.
 
