@@ -1,0 +1,18 @@
+# HYPOTHETICAL placeholder costs: replace with operator data (see docs/operator_data_request.md once written).
+# Nothing computed from these values is a finding. Units: EUR (arbitrary currency units).
+status: "hypothetical - replace with operator data"
+C_visit: 40.0              # technician trip to a rural customer (hypothetical)
+C_check: 1.0               # remote test / SMS confirmation per alert (hypothetical)
+C_batt_planned: 60.0       # battery replaced before failure (hypothetical)
+C_batt_emergency: 70.0     # battery replaced after failure, incl. expedited handling (hypothetical)
+C_outage_per_day: 0.5      # lost PAYGo repayment + customer cost per day without power (hypothetical)
+D_outage_days: 10.0        # days a failed system is down before repair (hypothetical)
+C_churn: 150.0             # value lost if the customer leaves (hypothetical)
+p_churn_after_outage: 0.10 # probability a customer churns after an unplanned outage (hypothetical)
+K_per_1000_month: [5, 10, 20, null]   # technician capacity: max dispatches per 1,000 systems per month (null = unlimited)
+confirm:                   # optional remote confirmation before dispatch (all hypothetical)
+  sensitivity: 0.90        # P(check confirms | battery really about to fail)
+  false_confirm: 0.10      # P(check confirms | battery not about to fail)
+horizon_days: 30           # an alert is useful if the battery fails within W days after it
+useful_window_days: 56     # W: a dispatch counts as true if failure follows within this many days
+cooldown_days: 90          # after a dispatch the system is not re-alerted for this long

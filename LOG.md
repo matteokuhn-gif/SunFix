@@ -24,3 +24,12 @@ Sessions 1-4 were not logged at the time. Entries below were reconstructed on 20
 **Decisions:** subsample, daily proxy, gap scaling (see METHODOLOGY.md).
 **Next:** Phase 5 REPORT.md; optionally a combined cheap-device scenario and a full-data run of the key scenarios; Phase 6.
 **Commit:** see git log
+
+## 2026-11-03 – Session 6 (Phase 5, Phase 6a)
+**Goal:** write REPORT.md; cost-aware evaluation harness (6a); stop after 6a per PHASE6_PROMPT.md.
+**Done:** REPORT.md; `config/costs.yaml` (hypothetical); `sunfix/landmarks.py`, `eval_ops.py`, `run_6a.py`; `docs/phase6a_report.md`; figures cost_vs_threshold, leadtime_hist, calibration_bboxx, breakeven_bboxx.
+**Results:** 434k landmarks; hazard 0 below 360 d, 4.9-14% per month above (as sampled). Phase-3-style operating point: 67 false vs 17 true dispatches per 1,000 per month (precision 21%), cost above reactive under hypothetical costs. Best cost-optimal policy about 9% below reactive (hypothetical). Calibration test ECE 0.006.
+**Problems / surprises:** age-based baseline equals reactive (placeholder planned/emergency costs too close; test cohort younger). Sample is 48% failed, so as-sampled hazard overstates a real fleet. No district metadata: leave-one-district-out skipped.
+**Decisions:** see METHODOLOGY.md Phase 6 and Decisions.
+**Next:** 6b benchmark models (features.py with no look-ahead, LightGBM hazard, Cox/RSF, CUSUM, ensemble).
+**Commit:** see git log

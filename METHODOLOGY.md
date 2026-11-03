@@ -32,6 +32,10 @@ Balanced accuracy (headline), sensitivity, specificity, precision, false alarms 
 ## Minimum-data experiment design (Phase 4)
 Single-factor degradations of the cleaned data, scenario list and implementation in `sunfix/phase4.py`; details, limitations and results in `docs/phase4_report.md`. Decision times fixed from native data; Phase 3 per-fold hyperparameters reused (refit only without temperature); h = 28 and 56.
 
+## Phase 6 (false-positive economics, benchmarks, LFP transfer)
+### 6a Cost-aware evaluation
+Landmarks over all system-days (age >= 120 d), label "fails within 30 d", alive batteries censored; temporal split by activation date (50/20/30% train/calibration/test); gradient boosting + Platt calibration; alert policy (threshold, persistence N, confirmation, capacity K, 90-day cooldown); expected-value cost accounting with hypothetical costs in `config/costs.yaml`; operating point selected on the calibration cohort, reported on test with a battery-level bootstrap; baselines reactive, age-based, Elkan. Details and limitations: `docs/phase6a_report.md`.
+
 ## Assumptions and limitations
 Lead-acid, not LFP; one manufacturer; alive batteries are censored; labels are customer repair decisions, not confirmed battery faults; hyperparameters poorly determined by 8 batteries; CC BY-NC data (research use only).
 
@@ -43,3 +47,7 @@ Lead-acid, not LFP; one manufacturer; alive batteries are censored; labels are c
 - **2026-11-03 (Phase 4)** Ran all scenarios on a fixed stratified 40% subsample of batteries (seed 0) with the Phase 3 folds restricted to it, instead of all 1,027, to cut runtime from about 70 to about 25 minutes. Alternative: full run (rejected for time). Cost: intervals of about +-4 points. Full-data runs exist only for 5-min sampling and daily summaries.
 - **2026-11-03 (Phase 4)** Daily-summary scenario uses a proxy (Vmax-Vmin)/(Imax-Imin) because the resistance GP needs charging curves. Segment gap limit scaled to 2.5x the sampling interval for thinned data. Short-history baseline for relative level = first quarter of the visible window.
 - **2026-11-03 (Phase 4)** Empty history windows (telemetry gaps) count as "no reading" (median-imputed; coverage column reports the share with a reading).
+- **2026-11-03 (6a)** Temporal split by activation date (50/20/30) instead of random folds, as required by the brief; leave-one-district-out skipped because no location metadata exist. Alternative (random folds) rejected: leaks calendar-time effects.
+- **2026-11-03 (6a)** Alive batteries' last 30 d (labels) and last 56 d (simulation exposure) dropped as right-censored. Alternative: treat as healthy (rejected: biases hazard down).
+- **2026-11-03 (6a)** Expected-value simulation for confirmation and capacity (no random draws); un-dispatched true alerts count as missed. Operating point chosen on calibration cohort, never on test. Platt chosen over isotonic as the headline calibrator (fit on 205 batteries; isotonic reported).
+- **2026-11-03 (6a)** Base-rate sensitivity implemented by re-weighting failed batteries because the sample is about 48% failed.
