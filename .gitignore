@@ -9,3 +9,7 @@ __pycache__/
 external/
 papers/
 Aitio_and_Howey_2021_predicting_battery_end.pdf
+
+# small derived files are tracked (see derived/README.md)
+!derived/
+!derived/**
