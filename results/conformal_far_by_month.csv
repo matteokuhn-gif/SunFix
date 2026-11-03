@@ -1,0 +1,113 @@
+alpha,method,month,healthy_days,realised_FAR
+0.01,static,2020-04,617,0.0
+0.01,static,2020-05,2246,0.0
+0.01,static,2020-06,4370,0.0011441647597254005
+0.01,static,2020-07,5925,0.016371308016877636
+0.01,static,2020-08,2167,0.024919243193354867
+0.01,static,2020-09,4,0.0
+0.01,static,ALL,15329,0.01017678909256964
+0.01,"adaptive (ACI, delayed labels)",2020-04,617,0.0
+0.01,"adaptive (ACI, delayed labels)",2020-05,2246,0.0
+0.01,"adaptive (ACI, delayed labels)",2020-06,4370,0.0013729977116704805
+0.01,"adaptive (ACI, delayed labels)",2020-07,5925,0.022447257383966246
+0.01,"adaptive (ACI, delayed labels)",2020-08,2167,0.031841255191509
+0.01,"adaptive (ACI, delayed labels)",2020-09,4,0.0
+0.01,"adaptive (ACI, delayed labels)",ALL,15329,0.013569052123426186
+0.01,"sliding window (90 d, delayed)",2020-04,617,0.0
+0.01,"sliding window (90 d, delayed)",2020-05,2246,0.2653606411398041
+0.01,"sliding window (90 d, delayed)",2020-06,4370,0.010068649885583524
+0.01,"sliding window (90 d, delayed)",2020-07,5925,0.022447257383966246
+0.01,"sliding window (90 d, delayed)",2020-08,2167,0.026303645592985696
+0.01,"sliding window (90 d, delayed)",2020-09,4,0.0
+0.01,"sliding window (90 d, delayed)",ALL,15329,0.0541457368386718
+0.01,age-conditional (Mondrian),2020-04,617,0.0
+0.01,age-conditional (Mondrian),2020-05,2246,0.0
+0.01,age-conditional (Mondrian),2020-06,4370,0.0011441647597254005
+0.01,age-conditional (Mondrian),2020-07,5925,0.015358649789029536
+0.01,age-conditional (Mondrian),2020-08,2167,0.02168897092754961
+0.01,age-conditional (Mondrian),2020-09,4,0.0
+0.01,age-conditional (Mondrian),ALL,15329,0.009328723334855503
+0.02,static,2020-04,617,0.0
+0.02,static,2020-05,2246,0.004452359750667854
+0.02,static,2020-06,4370,0.003432494279176201
+0.02,static,2020-07,5925,0.02430379746835443
+0.02,static,2020-08,2167,0.02814951545916013
+0.02,static,2020-09,4,0.0
+0.02,static,ALL,15329,0.015004240328788571
+0.02,"adaptive (ACI, delayed labels)",2020-04,617,0.0
+0.02,"adaptive (ACI, delayed labels)",2020-05,2246,0.004452359750667854
+0.02,"adaptive (ACI, delayed labels)",2020-06,4370,0.005263157894736842
+0.02,"adaptive (ACI, delayed labels)",2020-07,5925,0.035949367088607596
+0.02,"adaptive (ACI, delayed labels)",2020-08,2167,0.050761421319796954
+0.02,"adaptive (ACI, delayed labels)",2020-09,4,0.0
+0.02,"adaptive (ACI, delayed labels)",ALL,15329,0.023223954595864047
+0.02,"sliding window (90 d, delayed)",2020-04,617,0.0
+0.02,"sliding window (90 d, delayed)",2020-05,2246,0.329919857524488
+0.02,"sliding window (90 d, delayed)",2020-06,4370,0.03226544622425629
+0.02,"sliding window (90 d, delayed)",2020-07,5925,0.03324894514767932
+0.02,"sliding window (90 d, delayed)",2020-08,2167,0.03414859252422704
+0.02,"sliding window (90 d, delayed)",2020-09,4,0.0
+0.02,"sliding window (90 d, delayed)",ALL,15329,0.07521690912649227
+0.02,age-conditional (Mondrian),2020-04,617,0.0
+0.02,age-conditional (Mondrian),2020-05,2246,0.01068566340160285
+0.02,age-conditional (Mondrian),2020-06,4370,0.004576659038901602
+0.02,age-conditional (Mondrian),2020-07,5925,0.023459915611814347
+0.02,age-conditional (Mondrian),2020-08,2167,0.030456852791878174
+0.02,age-conditional (Mondrian),2020-09,4,0.0
+0.02,age-conditional (Mondrian),ALL,15329,0.016243721051601538
+0.05,static,2020-04,617,0.0
+0.05,static,2020-05,2246,0.024933214603739984
+0.05,static,2020-06,4370,0.018306636155606407
+0.05,static,2020-07,5925,0.050295358649789026
+0.05,static,2020-08,2167,0.06183664051684356
+0.05,static,2020-09,4,0.0
+0.05,static,ALL,15329,0.037053950029356124
+0.05,"adaptive (ACI, delayed labels)",2020-04,617,0.0
+0.05,"adaptive (ACI, delayed labels)",2020-05,2246,0.024933214603739984
+0.05,"adaptive (ACI, delayed labels)",2020-06,4370,0.02768878718535469
+0.05,"adaptive (ACI, delayed labels)",2020-07,5925,0.08725738396624473
+0.05,"adaptive (ACI, delayed labels)",2020-08,2167,0.11998154130133826
+0.05,"adaptive (ACI, delayed labels)",2020-09,4,0.0
+0.05,"adaptive (ACI, delayed labels)",ALL,15329,0.06223497945071433
+0.05,"sliding window (90 d, delayed)",2020-04,617,0.0
+0.05,"sliding window (90 d, delayed)",2020-05,2246,0.41317898486197685
+0.05,"sliding window (90 d, delayed)",2020-06,4370,0.11441647597254005
+0.05,"sliding window (90 d, delayed)",2020-07,5925,0.09265822784810127
+0.05,"sliding window (90 d, delayed)",2020-08,2167,0.08906322104291647
+0.05,"sliding window (90 d, delayed)",2020-09,4,0.0
+0.05,"sliding window (90 d, delayed)",ALL,15329,0.14156174571074434
+0.05,age-conditional (Mondrian),2020-04,617,0.0
+0.05,age-conditional (Mondrian),2020-05,2246,0.04407836153161175
+0.05,age-conditional (Mondrian),2020-06,4370,0.02700228832951945
+0.05,age-conditional (Mondrian),2020-07,5925,0.062278481012658225
+0.05,age-conditional (Mondrian),2020-08,2167,0.063682510383018
+0.05,age-conditional (Mondrian),2020-09,4,0.0
+0.05,age-conditional (Mondrian),ALL,15329,0.04723073912192576
+0.1,static,2020-04,617,0.0016207455429497568
+0.1,static,2020-05,2246,0.06188780053428317
+0.1,static,2020-06,4370,0.05881006864988558
+0.1,static,2020-07,5925,0.11172995780590718
+0.1,static,2020-08,2167,0.12551915089986157
+0.1,static,2020-09,4,0.0
+0.1,static,ALL,15329,0.0868288864244243
+0.1,"adaptive (ACI, delayed labels)",2020-04,617,0.0016207455429497568
+0.1,"adaptive (ACI, delayed labels)",2020-05,2246,0.06188780053428317
+0.1,"adaptive (ACI, delayed labels)",2020-06,4370,0.0794050343249428
+0.1,"adaptive (ACI, delayed labels)",2020-07,5925,0.17248945147679326
+0.1,"adaptive (ACI, delayed labels)",2020-08,2167,0.2182741116751269
+0.1,"adaptive (ACI, delayed labels)",2020-09,4,1.0
+0.1,"adaptive (ACI, delayed labels)",ALL,15329,0.1295583534477135
+0.1,"sliding window (90 d, delayed)",2020-04,617,0.0016207455429497568
+0.1,"sliding window (90 d, delayed)",2020-05,2246,0.47506678539626
+0.1,"sliding window (90 d, delayed)",2020-06,4370,0.26041189931350117
+0.1,"sliding window (90 d, delayed)",2020-07,5925,0.19358649789029536
+0.1,"sliding window (90 d, delayed)",2020-08,2167,0.1767420396862021
+0.1,"sliding window (90 d, delayed)",2020-09,4,0.75
+0.1,"sliding window (90 d, delayed)",ALL,15329,0.24391675908408897
+0.1,age-conditional (Mondrian),2020-04,617,0.004862236628849271
+0.1,age-conditional (Mondrian),2020-05,2246,0.08904719501335707
+0.1,age-conditional (Mondrian),2020-06,4370,0.08466819221967964
+0.1,age-conditional (Mondrian),2020-07,5925,0.11881856540084389
+0.1,age-conditional (Mondrian),2020-08,2167,0.12644208583294878
+0.1,age-conditional (Mondrian),2020-09,4,0.0
+0.1,age-conditional (Mondrian),ALL,15329,0.10118076847804815

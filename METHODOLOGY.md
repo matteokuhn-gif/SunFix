@@ -39,6 +39,9 @@ Landmarks over all system-days (age >= 120 d), label "fails within 30 d", alive 
 ### 6b Benchmark models
 Extended no-look-ahead features (`sunfix/features6.py`), models and evaluation in `sunfix/bench.py` and `docs/phase6b_report.md`. Headline metric is balanced accuracy restricted to age >= 360 d (the at-risk period), because over all landmarks the metric is dominated by trivially healthy young systems.
 
+### 6c Conformal gate and persistence
+Split-conformal thresholds on healthy at-risk system-days of the calibration cohort (static, age-conditional, adaptive with 56-day label delay, sliding window); realised false-alarm rate by month on the test cohort; persistence evaluated as the minimum score over N days against i.i.d. theory. Details: `docs/phase6c_report.md`.
+
 ## Assumptions and limitations
 Lead-acid, not LFP; one manufacturer; alive batteries are censored; labels are customer repair decisions, not confirmed battery faults; hyperparameters poorly determined by 8 batteries; CC BY-NC data (research use only).
 
@@ -58,3 +61,4 @@ Lead-acid, not LFP; one manufacturer; alive batteries are censored; labels are c
 - **2026-11-03 (6b)** Headline benchmark metric restricted to age >= 360 d, threshold re-chosen on the calibration cohort. Alternative (all landmarks) rejected: inflated by age (88-91%).
 - **2026-11-03 (6b)** Cox and RSF trained on landmarks every 14 days (about 18k rows) with alive batteries censored; GPC on 2,000 sampled landmarks; availability features kept out of headline models (ablation only).
 - **2026-11-03 (env)** numpy stays pinned at 1.26.4 (BattGP/torch code breaks on numpy 2.5); scikit-survival 0.28 needs `np.trapezoid`, shimmed in `sunfix/bench.py`.
+- **2026-11-03 (6c)** Persistence implemented as a conformal statistic (minimum score over the last N days) so each N has its own calibrated threshold and false-alarm budgets are equal across N. Healthy = no failure within 56 days with the outcome observed, age >= 360 d. Online variants use healthy outcomes only from dates <= t - 56 (labels arrive late).

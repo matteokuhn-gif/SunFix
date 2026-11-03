@@ -42,3 +42,11 @@ Sessions 1-4 were not logged at the time. Entries below were reconstructed on 20
 **Decisions:** see METHODOLOGY.md.
 **Next:** 6c conformal gate and persistence on autocorrelated scores; 6d needs approval for a 1.7 GB download.
 **Commit:** see git log
+
+## 2026-11-03 – Session 6 continued (Phase 6c)
+**Goal:** conformal gate and persistence on autocorrelated scores.
+**Done:** `sunfix/conformal.py`; `docs/phase6c_report.md`; `results/conformal_far_by_month.csv`, `persistence_bboxx.csv`; two figures.
+**Results:** static conformal realised false-alarm rate 3.7% at alpha 5% overall but 2.5% -> 6.2% over May-Aug; age-conditional best; sliding window 14% at 5% target. Persistence N=3/5/7 cuts FPR by 12/21/29% (i.i.d. would predict 96%+); at equal budget no detection gain, lead time 30 -> 26 d.
+**Problems / surprises:** only five months of at-risk test data, so seasonality is confounded with age. Cited Adnan et al. numbers not reproducible from p^N; definition unverified.
+**Next:** 6d: LFP transfer on the BattGP field set. Needs approval for a 1.7 GB download (Zenodo 13715694, CC BY-NC 4.0).
+**Commit:** see git log
