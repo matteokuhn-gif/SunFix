@@ -2,7 +2,7 @@
 
 Applies BattGP (Schaeffer et al. 2024) to the Bboxx lead-acid dataset of Aitio & Howey (2021). Data licence CC BY-NC 4.0, so research use only; the paper lists a patent application (GB 2105995.1).
 
-**Start here:** `results/SunFix_findings_summary.pdf` (2 pages). Details in `docs/`.
+**Start here:** `results/reports/SunFix_final_report.pdf` (final report, Phases 0-5; Phase 6 chapters are in the per-phase PDFs in the same folder) and `results/SunFix_findings_summary.pdf` (2 pages). Markdown sources in `REPORT.md` and `docs/`; regenerate PDFs with `python -m sunfix.md2pdf`.
 
 | Phase | Status | Report |
 |---|---|---|
