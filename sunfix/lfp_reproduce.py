@@ -35,20 +35,23 @@ from src.path_setup import setup_paths                       # noqa: E402
 
 warnings.filterwarnings("ignore")
 OUT = ROOT / "data" / "battgp_results"
-R0_BAND, R0_UPPER = 0.55e-3, 2.0e-3
+import os
+VARIANT = os.environ.get("LFP_VARIANT", "repo")   # "repo": BattGP gp_runner settings; "paper": arXiv v3 Table 3 criteria and band b = 0.33 mOhm
+R0_BAND, R0_UPPER = (0.33e-3 if VARIANT.startswith("paper") else 0.55e-3), 2.0e-3
+SUF = {"repo": "", "paper": "_paper", "paper_meanref": "_paper_meanref"}[VARIANT]
 OP = Op(-15, 90, 25)
 
 
 def run(sid: str):
     t0 = time.time()
     ocv = data_utils.read_cell_characteristics(path=cfg.PATH_FIELDDATA_CELL_CHARACTERISTIC)
-    battdata = batt_data.BattData(sid, ocv, segment_selection=True, segment_criteria=SegmentCriteria(soc_upper_limit=cfg.SOC_UPPER_LIMIT, soc_lower_limit=cfg.SOC_LOWER_LIMIT,
-                                                                       ibat_upper_limit=cfg.Ibat_UPPER_LIMIT, ibat_lower_limit=cfg.Ibat_LOWER_LIMIT,
+    battdata = batt_data.BattData(sid, ocv, segment_selection=True, segment_criteria=SegmentCriteria(soc_upper_limit=94 if VARIANT.startswith("paper") else cfg.SOC_UPPER_LIMIT, soc_lower_limit=cfg.SOC_LOWER_LIMIT,
+                                                                       ibat_upper_limit=cfg.Ibat_UPPER_LIMIT, ibat_lower_limit=-200 if VARIANT.startswith("paper") else cfg.Ibat_LOWER_LIMIT,
                                                                        t_upper_limit=cfg.T_UPPER_LIMIT, t_lower_limit=cfg.T_LOWER_LIMIT),
                                   gap_removal=cfg.GAP_REMOVAL, min_data_threshold=2000)
     t1 = time.time()
     model = BattGP_SpatioTemporal(battdata, max_age=None, device=torch.device("cpu"), sampling_time_sec=3600, max_batch_size=1000,
-                                  save_path=str(OUT), ref_strategy=RefStrategy(OP), basis_vector_strategy="kmeans", nbasis=[60])
+                                  save_path=str(OUT), ref_strategy=RefStrategy("mean" if VARIANT == "paper_meanref" else OP), basis_vector_strategy="kmeans", nbasis=[60])
     res = model.predict_cell_r0_op(smooth=True)
     t2 = time.time()
     out = {}
@@ -56,8 +59,9 @@ def run(sid: str):
         df = calc_fault_probabilities(res, causal=causal, r0_band=R0_BAND, r0_upper_threshold=R0_UPPER)
         out["causal" if causal else "smoothed"] = df
     OUT.mkdir(parents=True, exist_ok=True)
+    res.df.to_parquet(OUT / f"gp_res_df_sys{sid}{SUF}.parquet")
     for k, df in out.items():
-        df.to_parquet(OUT / f"fault_probs_sys{sid}_{k}.parquet")
+        df.to_parquet(OUT / f"fault_probs_sys{sid}_{k}{SUF}.parquet")
     rows = []
     for k, df in out.items():
         for c in df.columns:
@@ -65,7 +69,7 @@ def run(sid: str):
             rows.append(dict(system=sid, variant=k, column=str(c), max_prob=float(np.nanmax(v)), final_prob=float(v[~np.isnan(v)][-1]) if (~np.isnan(v)).any() else np.nan,
                              frac_time_above_0_5=float(np.nanmean(v > 0.5))))
     s = pd.DataFrame(rows)
-    s.to_csv(OUT / f"fault_summary_sys{sid}.csv", index=False)
+    s.to_csv(OUT / f"fault_summary_sys{sid}{SUF}.csv", index=False)
     info = dict(system=sid, rows_loaded=int(len(battdata.df)), load_s=t1 - t0, gp_s=t2 - t1, peak_rss_gb=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e9)
     print(json.dumps(info), flush=True)
     print(s.pivot_table(index="column", columns="variant", values="max_prob").round(3).to_string(), flush=True)

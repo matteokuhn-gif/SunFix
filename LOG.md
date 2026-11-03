@@ -59,3 +59,10 @@ Sessions 1-4 were not logged at the time. Entries below were reconstructed on 20
 **Decisions:** none new methodologically; BattGP run unchanged with its shipped settings.
 **Next:** obtain the paper (user to supply PDF); then 6d.2 pack-only ablation.
 **Commit:** see git log
+
+## 2026-11-03 – Session 6 continued (Phase 6d.1 completed)
+**Done:** read the paper (arXiv 2406.19015v3) via a fetch agent; ran BattGP on systems 3, 9, 6 under three settings; compared with the paper's statements.
+**Results:** cell identification and onset timing match the paper under the paper's settings (cell 7 / sys 3; cell 8 / sys 6 crosses 0.5 on day 1020 vs "shortly before 1000"; cell 2 / sys 9 on day 241 vs 240). Under BattGP default settings system 6 cell 8 is flagged from the start (reference operating point matters). Paper: 29 systems/131M rows vs data 28/133M.
+**Problems / surprises:** absolute 2 mOhm threshold is not in the paper and saturates (cell R0 about 8-9 mOhm). Paper figure captions and text disagree on system numbers.
+**Decisions:** use paper settings with mean reference operating point and a 30-day burn-in for per-cell pseudo-labels in 6d.2.
+**Commit:** see git log
