@@ -30,6 +30,7 @@ START = dict(sf0=2.26, sf1=0.34, ls=(1.94, 2.79, 3.96))    # lengthscales for (I
 VARIANTS = {
     "ocv": dict(dims=("I", "soc", "T"), note="Coulomb-counted SOC + GITT OCV curve (Aitio-style)"),
     "nocv": dict(dims=("I", "T"), note="no OCV curve: OCV approximated by the rest voltage before the segment"),
+    "ocv_noT": dict(dims=("I", "soc"), note="Phase 4: as ocv but no temperature channel (T constant, dropped from the operating point)"),
 }
 
 
@@ -46,16 +47,17 @@ class Prepared:
 
 
 def prepare(batt_id: int, variant: str, meta: pd.DataFrame | None = None, stride: int = ROW_STRIDE,
-            max_t: float | None = None) -> Prepared | None:
-    """Rows for the resistance model. max_t (unix s) cuts the data, used to guarantee no look-ahead."""
+            max_t: float | None = None, seg: pd.DataFrame | None = None) -> Prepared | None:
+    """Rows for the resistance model. max_t (unix s) cuts the data, used to guarantee no look-ahead.
+    seg: pre-built (e.g. degraded, Phase 4) segment frame; default is the cached native segments."""
     m = (meta if meta is not None else load_meta()).loc[batt_id]
-    seg = add_soc(segments_for(batt_id, meta))
+    seg = add_soc(segments_for(batt_id, meta) if seg is None else seg)
     if max_t is not None:
         seg = seg[seg.t <= max_t]
-    if variant == "ocv":
+    if variant in ("ocv", "ocv_noT"):
         u = usable_rows(seg)
         base, noise_v = u.ocv.to_numpy(), u.noise_v2.to_numpy()
-        cols = ["I", "soc", "T"]
+        cols = ["I", "soc", "T"] if variant == "ocv" else ["I", "soc"]
     else:
         u = seg[(seg.I < -0.2) & (seg.v_start < seg.V)].reset_index(drop=True)
         base, noise_v = u.v_start.to_numpy(), np.full(len(u), 0.15**2)
@@ -119,12 +121,13 @@ def build_gp(norm: Normaliser, sf0: float, sf1: float, ls: tuple) -> HeteroGP:
                     device=torch.device("cpu"))
 
 
-def run_battery(p: Prepared, norm: Normaliser, sf0: float, sf1: float, ls: tuple, slices: bool = False, tau: float = 0.0):
+def run_battery(p: Prepared, norm: Normaliser, sf0: float, sf1: float, ls: tuple, slices: bool = False, tau: float = 0.0,
+                t0: float = 0.0):
     """Causal filter over a battery's segments. Returns (per-segment DataFrame, total log-lik, slices dict|None)."""
     gp = build_gp(norm, sf0, sf1, ls)
     Z = norm(p.X)
     ref = np.zeros((1, Z.shape[1]))
-    rows, total_ll, t_prev = [], 0.0, 0.0
+    rows, total_ll, t_prev = [], 0.0, t0   # t0: filter start (normalised time); Phase 4 history windows start fresh
     bounds = np.flatnonzero(np.r_[True, np.diff(p.seg) != 0, True])
     for a, b in zip(bounds[:-1], bounds[1:]):
         t_seg = p.t[a:b]

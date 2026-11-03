@@ -41,7 +41,7 @@ def fit(variant: str, n_each: int = 4, stride: int = 10, maxiter: int = 600, see
     preps = [prepare(i, variant, m, stride=stride) for i in train]
     norm = fit_normaliser(preps)
     d = norm.basis.shape[1]
-    ls0 = [START["ls"][0], START["ls"][1], START["ls"][2]] if d == 3 else [START["ls"][0], START["ls"][2]]
+    ls0 = [START["ls"][0], START["ls"][1], START["ls"][2]] if d == 3 else ([START["ls"][0], START["ls"][1]] if variant == "ocv_noT" else [START["ls"][0], START["ls"][2]])
     theta0 = np.log([START["sf0"], START["sf1"], 0.05, *ls0])
     t = time.time()
     res = minimize(neg_log_post, theta0, args=(preps, norm), method="Nelder-Mead",

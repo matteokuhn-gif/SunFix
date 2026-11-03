@@ -14,7 +14,11 @@ RES_COLS = ["level", "slope_now", "slope_2w", "slope_4w", "slope_8w", "rel_level
 STRESS_COLS = ["age", "ah", "mean_T", "mean_V", "cycles", "float_h"]
 RES_CORE = [c for c in RES_COLS if c not in ("unc", "stale_days")]   # no data-availability columns
 SETS = {"res": RES_COLS, "stress": STRESS_COLS, "res+stress": RES_COLS + STRESS_COLS, "age_only": ["age"],
-        "res_core": RES_CORE, "res_core+stress": RES_CORE + STRESS_COLS, "stale_only": ["stale_days"]}
+        "res_core": RES_CORE, "res_core+stress": RES_CORE + STRESS_COLS, "stale_only": ["stale_days"],
+        # Phase 4 sets (registered here so joblib worker processes see them)
+        "stress_only": STRESS_COLS, "stress_only_noT": [c for c in STRESS_COLS if c != "mean_T"],
+        "res_core+stress_noT": RES_CORE + [c for c in STRESS_COLS if c != "mean_T"],
+        "proxy_only": RES_CORE, "proxy+stress": RES_CORE + ["age", "ah", "mean_T", "mean_V", "cycles"], "stress_only_daily": ["age", "ah", "mean_T", "mean_V", "cycles"]}
 DT_CAP = 610.0   # s; gaps longer than this contribute no throughput/time
 
 
@@ -32,9 +36,11 @@ def _runs(mask: np.ndarray, t: np.ndarray, min_dur: float = 600.0):
     return t[stop][keep], (t[stop] - t[start])[keep]
 
 
-def stress_features(batt_id: int, m: pd.DataFrame | None = None, horizons=HORIZONS) -> pd.DataFrame:
+def stress_features(batt_id: int, m: pd.DataFrame | None = None, horizons=HORIZONS, d: pd.DataFrame | None = None,
+                    t_end: float | None = None) -> pd.DataFrame:
+    """d / t_end: optional degraded frame and native series end (Phase 4); default is native cleaned data."""
     m = m if m is not None else load_meta()
-    d = clean_raw(batt_id, m)
+    d = clean_raw(batt_id, m) if d is None else d
     t, I, V, T = (d[c].to_numpy() for c in ("t", "I", "V", "T"))
     dt = np.minimum(np.r_[np.diff(t), 0.0], DT_CAP)
     cum_dt = np.cumsum(dt)
@@ -43,7 +49,7 @@ def stress_features(batt_id: int, m: pd.DataFrame | None = None, horizons=HORIZO
     cyc_end, _ = _runs(I > 0.05, t)
     flt_end, flt_dur = _runs((V >= 13.4) & (V <= 13.6), t)
     flt_cum = np.cumsum(flt_dur)
-    t_end = end_time(batt_id, m, d)
+    t_end = end_time(batt_id, m, d) if t_end is None else t_end
     act = m.activation_time[batt_id].timestamp()
     rows = []
     for h in horizons:
@@ -58,10 +64,12 @@ def stress_features(batt_id: int, m: pd.DataFrame | None = None, horizons=HORIZO
     return pd.DataFrame(rows)
 
 
-def resistance_features(batt_id: int, traj: pd.DataFrame, taus_days: dict[int, float]) -> pd.DataFrame:
+def resistance_features(batt_id: int, traj: pd.DataFrame, taus_days: dict[int, float], window_baseline: bool = False) -> pd.DataFrame:
     """traj: causal per-segment filter output (sunfix.resistance.run_battery); taus_days: h -> tau in days since activation."""
     td = traj.t.to_numpy() * 400.0
     base_rows = (td >= 60) & (td <= 120)
+    if window_baseline and len(td):   # Phase 4 short history: days 60-120 are not visible; use the first quarter of the visible span
+        base_rows = td <= td[0] + 0.25 * max(td[-1] - td[0], 1.0)
     base = float(np.median(traj.r0[base_rows])) if base_rows.any() else np.nan
     rows = []
     for h, tau in taus_days.items():
