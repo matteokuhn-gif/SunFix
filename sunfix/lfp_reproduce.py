@@ -80,4 +80,7 @@ if __name__ == "__main__":
     torch.set_default_dtype(torch.float64)
     setup_paths()
     for sid in sys.argv[1:]:
-        run(sid)
+        try:
+            run(sid)
+        except Exception as e:   # e.g. InsufficientDataError: the paper also models only a subset of systems
+            print(json.dumps(dict(system=sid, skipped=type(e).__name__, reason=str(e)[:200])), flush=True)

@@ -66,3 +66,12 @@ Sessions 1-4 were not logged at the time. Entries below were reconstructed on 20
 **Problems / surprises:** absolute 2 mOhm threshold is not in the paper and saturates (cell R0 about 8-9 mOhm). Paper figure captions and text disagree on system numbers.
 **Decisions:** use paper settings with mean reference operating point and a 30-day burn-in for per-cell pseudo-labels in 6d.2.
 **Commit:** see git log
+
+## 2026-11-03 – Session 6 continued (Phase 6d.2 to 6d.4, full report)
+**Goal:** pack-only ablation on LFP, degraded pack-only data, lead-acid to LFP rank agreement, full PDF report.
+**Done:** per-cell BattGP on all 28 systems (21 modelled; 22-28 fail the minimum-data filter); drift-based pseudo-labels; pack-only pipeline (`lfp_pack.py`, `lfp_pack_run.py`, `lfp_pack_degrade.py`, `lfp_sections.py`, `lfp_transfer.py`); `docs/FULL_REPORT.md` and PDFs (`python -m sunfix.md2pdf`).
+**Results:** pack-only detection 0-4 of 10 faults, 0-6 of 8 controls falsely flagged, AUC 0.17-0.92 across fit sets: inconclusive, leaning negative. Baselinable systems fall from 17 to 10 / 7 / 8 at 5 min / 15 min / 1 h sampling. Transfer: Spearman -0.34 (CI -0.74 to 0.33), AUC 0.50.
+**Problems / surprises:** paper-literal weakest-link flags 19/21 systems from day 30 (not usable as a label); pack pipeline bugs (1000x time units, quadratic rest lookup, lead-acid hyperparameter bound pinning tau); method revised several times on the same 19 systems, so the pack-only result is exploratory; first degradation table had a fixed 5-min rest lookback that made coverage zero at slow sampling (scaled and re-run).
+**Decisions:** see METHODOLOGY.md.
+**Next:** 6g (final write-up with Phase 6, operator data request, shadow-mode protocol); decide on 6e/6f; see section 7 of the full report.
+**Commit:** see git log

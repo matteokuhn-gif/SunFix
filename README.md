@@ -2,7 +2,7 @@
 
 Applies BattGP (Schaeffer et al. 2024) to the Bboxx lead-acid dataset of Aitio & Howey (2021). Data licence CC BY-NC 4.0, so research use only; the paper lists a patent application (GB 2105995.1).
 
-**Start here:** `results/reports/SunFix_final_report.pdf` (final report, Phases 0-5; Phase 6 chapters are in the per-phase PDFs in the same folder) and `results/SunFix_findings_summary.pdf` (2 pages). Markdown sources in `REPORT.md` and `docs/`; regenerate PDFs with `python -m sunfix.md2pdf`.
+**Start here:** `results/reports/SunFix_FULL_REPORT.pdf` (everything, Phases 0 to 6d, plus recommended next steps), then `results/reports/SunFix_final_report.pdf` (final report, Phases 0-5; Phase 6 chapters are in the per-phase PDFs in the same folder) and `results/SunFix_findings_summary.pdf` (2 pages). Markdown sources in `REPORT.md` and `docs/`; regenerate PDFs with `python -m sunfix.md2pdf`.
 
 | Phase | Status | Report |
 |---|---|---|
@@ -15,7 +15,7 @@ Applies BattGP (Schaeffer et al. 2024) to the Bboxx lead-acid dataset of Aitio &
 | 6a Cost-aware evaluation (hypothetical costs) | done | docs/phase6a_report.md |
 | 6b Benchmark models | done | docs/phase6b_report.md |
 | 6c Conformal gate, persistence | done | docs/phase6c_report.md |
-| 6d LFP transfer | in progress: data downloaded, BattGP reproduction runs, paper comparison pending | docs/phase6d_report.md |
+| 6d LFP transfer | done: BattGP reproduced; pack-only detection not shown (inconclusive, leaning negative) | docs/phase6d_report.md |
 | 6e-6g RWTH, priors, write-up | not started | PHASE6_PROMPT.md |
 
 ## Setup
@@ -38,5 +38,6 @@ Package is `sunfix/` (not `src/`) because BattGP imports a top-level `src`.
 - Phase 6a (hypothetical costs): at the as-sampled failure rate, a Phase-3-style balanced operating point gives about 67 false dispatches per 17 true per 1,000 systems per month (precision 21%); acting on it costs more than reactive-only. Details: docs/phase6a_report.md.
 - Phase 6b: at-risk (age >= 360 d) balanced accuracy 75-78% for LightGBM, Cox, survival forest and GP classifier alike; usage-only 76%, age only 65%, so resistance adds about 1-2 points (noise). CUSUM + fleet z alone 58%. Overall-landmark accuracy (88-91%) is inflated by age. Details: docs/phase6b_report.md.
 - Phase 6c: a static conformal gate is conservative overall but its monthly false-alarm rate was 2.5-1.8% in May-June and 5.0-6.2% in July-August (target 5%); age-conditional calibration tracks best; sliding window fails. Requiring N consecutive days cuts false positives by only 12-29% (N=3-7) versus 75-96% under i.i.d. theory, and does not improve detection at equal false-alarm budget. Details: docs/phase6c_report.md.
+- Phase 6d: BattGP reproduces on the LFP data (paper settings); a pack-only OCV-free resistance signal could not be shown to detect single-cell faults (10 fault vs 8 control systems; results unstable across fit sets); lead-acid model does not rank LFP systems like the per-cell method (Spearman -0.34, n=11). Details: docs/phase6d_report.md.
 - Small derived data is tracked in `derived/` (see derived/README.md).
 - Generated data lives in `data/` (git-ignored, about 6 GB): parquet cache, segments, resistance trajectories, per-fold hyperparameters.

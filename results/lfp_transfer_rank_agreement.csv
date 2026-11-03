@@ -1,0 +1,2 @@
+n_systems,n_fault,n_control,spearman_risk_vs_cell_drift,spearman_p,spearman_ci_lo,spearman_ci_hi,auc_fault_vs_control,bboxx_test_auc_same_features
+11,7,4,-0.33636363636363636,0.31182431390038634,-0.7441655224343358,0.3301446691342422,0.5,0.6627313374874155

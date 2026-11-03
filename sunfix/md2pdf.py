@@ -20,23 +20,24 @@ table { border-collapse: collapse; width: 100%; margin: 7pt 0; font-size: 9pt; p
 th, td { border: 1px solid #ccd; padding: 3pt 5pt; text-align: left; vertical-align: top; } th { background: #eef4fc; }
 code { font-family: Menlo, monospace; font-size: 8.6pt; background: #f3f3f3; padding: 0 2pt; }
 pre { background: #f3f3f3; padding: 6pt; font-size: 8.4pt; white-space: pre-wrap; }
-img { max-width: 100%; margin: 6pt 0; page-break-inside: avoid; } .fig { page-break-inside: avoid; } .cap { color: #555; font-size: 8.5pt; }
+img { max-width: 100%; margin: 6pt 0; page-break-inside: avoid; } p > img { display: block; max-width: 92%; margin: 8pt auto; } .fig { page-break-inside: avoid; } .cap { color: #555; font-size: 8.5pt; }
 """
 REPORTS = {   # markdown file -> (pdf name, figures)
+    "docs/FULL_REPORT.md": ("SunFix_FULL_REPORT", []),
     "REPORT.md": ("SunFix_final_report", ["phase3_summary.png", "phase4_minimum_data_sub40.png"]),
     "docs/phase3_report.md": ("Phase3_EOL_prediction", ["phase3_summary.png"]),
     "docs/phase4_report.md": ("Phase4_minimum_data", ["phase4_minimum_data_sub40.png"]),
     "docs/phase6a_report.md": ("Phase6a_cost_aware_evaluation", ["cost_vs_threshold.png", "leadtime_hist.png", "calibration_bboxx.png", "breakeven_bboxx.png"]),
     "docs/phase6b_report.md": ("Phase6b_benchmark_models", ["shap_lightgbm_bboxx.png"]),
     "docs/phase6c_report.md": ("Phase6c_conformal_persistence", ["conformal_far_by_month.png", "persistence_effect.png"]),
-    "docs/phase6d_report.md": ("Phase6d_LFP_transfer", []),
+    "docs/phase6d_report.md": ("Phase6d_LFP_transfer", ["lfp_pack_only.png"]),
     "docs/phase2_report.md": ("Phase2_resistance_model", ["phase2_trajectories_ocv.png", "phase2_operating_point_slices_ocv.png"]),
     "docs/eda_report.md": ("Phase1_EDA", ["eda_distributions.png", "eda_examples.png"]),
 }
 
 
 def render(md_path: str, name: str, figs: list[str]):
-    text = (ROOT / md_path).read_text()
+    text = (ROOT / md_path).read_text().replace("](FIG/", f"]({FIG.as_uri()}/")
     html = markdown.markdown(text, extensions=["tables", "fenced_code", "sane_lists"])
     figs_html = "".join(f'<div class="fig"><img src="{(FIG / f).as_uri()}"><div class="cap">{f}</div></div>' for f in figs if (FIG / f).exists())
     page = f"<html><head><meta charset='utf-8'><style>{CSS}</style></head><body>{html}{('<h2>Figures</h2>' + figs_html) if figs_html else ''}</body></html>"
