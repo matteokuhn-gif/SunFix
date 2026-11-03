@@ -13,7 +13,8 @@ Applies BattGP (Schaeffer et al. 2024) to the Bboxx lead-acid dataset of Aitio &
 | 4 Minimum-data experiments (40% subsample) | done | docs/phase4_report.md |
 | 5 REPORT.md | done | REPORT.md |
 | 6a Cost-aware evaluation (hypothetical costs) | done | docs/phase6a_report.md |
-| 6b-6g Benchmarks, conformal, LFP transfer, write-up | not started | PHASE6_PROMPT.md |
+| 6b Benchmark models | done | docs/phase6b_report.md |
+| 6c-6g Conformal, LFP transfer, RWTH, priors, write-up | not started | PHASE6_PROMPT.md |
 
 ## Setup
 Needs the raw `set_*.zip`, `meta_data.csv`, `GITT_OCV.mpt` in this folder (not in git) and `external/BattGP` cloned (commit 6d5e1db, not in git: `git clone https://github.com/JoachimSchaeffer/BattGP external/BattGP`). Python 3.12 venv with `uv pip install -r requirements.txt`. Run `make all`.
@@ -33,4 +34,6 @@ Package is `sunfix/` (not `src/`) because BattGP imports a top-level `src`.
 - Headline: balanced accuracy 81 / 79 / 74 % at 0 / 28 / 56 days (paper 82 / 76 / 73).
 - Phase 4 (40% subsample, +-4 pt intervals): no tested degradation (5 min to 1 h sampling, daily summaries, no temperature, 30-180 d history, rounding, 10-50% packet loss) measurably hurt the 28-day warning (77-81% vs 78% native); usage-only is 61-72%. Smallest passing spec: one daily record (79% subsample, 75% full data). Combinations untested.
 - Phase 6a (hypothetical costs): at the as-sampled failure rate, a Phase-3-style balanced operating point gives about 67 false dispatches per 17 true per 1,000 systems per month (precision 21%); acting on it costs more than reactive-only. Details: docs/phase6a_report.md.
+- Phase 6b: at-risk (age >= 360 d) balanced accuracy 75-78% for LightGBM, Cox, survival forest and GP classifier alike; usage-only 76%, age only 65%, so resistance adds about 1-2 points (noise). CUSUM + fleet z alone 58%. Overall-landmark accuracy (88-91%) is inflated by age. Details: docs/phase6b_report.md.
+- Small derived data is tracked in `derived/` (see derived/README.md).
 - Generated data lives in `data/` (git-ignored, about 6 GB): parquet cache, segments, resistance trajectories, per-fold hyperparameters.

@@ -33,3 +33,12 @@ Sessions 1-4 were not logged at the time. Entries below were reconstructed on 20
 **Decisions:** see METHODOLOGY.md Phase 6 and Decisions.
 **Next:** 6b benchmark models (features.py with no look-ahead, LightGBM hazard, Cox/RSF, CUSUM, ensemble).
 **Commit:** see git log
+
+## 2026-11-03 – Session 6 continued (Phase 6b)
+**Goal:** benchmark models on the 6a landmarks.
+**Done:** `sunfix/features6.py`, `bench.py`, `bench_ibs.py`; `results/benchmark_table.csv`; SHAP; `docs/phase6b_report.md`; small derived data tracked in `derived/`.
+**Results:** at-risk balanced accuracy 75-78% for all supervised models; usage-only 76%, age only 65%; CUSUM+z 58%; ensemble no gain; IBS Cox 0.0254, RSF 0.0223. Cost-optimal operating points indistinguishable (hypothetical costs).
+**Problems / surprises:** unrestricted balanced accuracy 88-91% is an age artefact (caught from SHAP). Installing scikit-survival upgraded numpy to 2.5 and broke the resistance model; restored numpy 1.26.4 and re-verified Phase 3 equivalence (diff 1e-10). First bench run swallowed metric errors (np.trapezoid, test-event filter); fixed. Detached jobs do not notify on completion; use a watcher.
+**Decisions:** see METHODOLOGY.md.
+**Next:** 6c conformal gate and persistence on autocorrelated scores; 6d needs approval for a 1.7 GB download.
+**Commit:** see git log

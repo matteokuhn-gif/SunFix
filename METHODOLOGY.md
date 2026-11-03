@@ -36,6 +36,9 @@ Single-factor degradations of the cleaned data, scenario list and implementation
 ### 6a Cost-aware evaluation
 Landmarks over all system-days (age >= 120 d), label "fails within 30 d", alive batteries censored; temporal split by activation date (50/20/30% train/calibration/test); gradient boosting + Platt calibration; alert policy (threshold, persistence N, confirmation, capacity K, 90-day cooldown); expected-value cost accounting with hypothetical costs in `config/costs.yaml`; operating point selected on the calibration cohort, reported on test with a battery-level bootstrap; baselines reactive, age-based, Elkan. Details and limitations: `docs/phase6a_report.md`.
 
+### 6b Benchmark models
+Extended no-look-ahead features (`sunfix/features6.py`), models and evaluation in `sunfix/bench.py` and `docs/phase6b_report.md`. Headline metric is balanced accuracy restricted to age >= 360 d (the at-risk period), because over all landmarks the metric is dominated by trivially healthy young systems.
+
 ## Assumptions and limitations
 Lead-acid, not LFP; one manufacturer; alive batteries are censored; labels are customer repair decisions, not confirmed battery faults; hyperparameters poorly determined by 8 batteries; CC BY-NC data (research use only).
 
@@ -51,3 +54,7 @@ Lead-acid, not LFP; one manufacturer; alive batteries are censored; labels are c
 - **2026-11-03 (6a)** Alive batteries' last 30 d (labels) and last 56 d (simulation exposure) dropped as right-censored. Alternative: treat as healthy (rejected: biases hazard down).
 - **2026-11-03 (6a)** Expected-value simulation for confirmation and capacity (no random draws); un-dispatched true alerts count as missed. Operating point chosen on calibration cohort, never on test. Platt chosen over isotonic as the headline calibrator (fit on 205 batteries; isotonic reported).
 - **2026-11-03 (6a)** Base-rate sensitivity implemented by re-weighting failed batteries because the sample is about 48% failed.
+- **2026-11-03 (6b)** Fleet z-score uses only peers installed up to 60 days BEFORE the battery (causal) instead of the brief's +-1 month window, which would use peers' later data. Bayesian online change-point detection not implemented (CUSUM only), to be added only if the unsupervised route proves useful (it did not: 58% at-risk).
+- **2026-11-03 (6b)** Headline benchmark metric restricted to age >= 360 d, threshold re-chosen on the calibration cohort. Alternative (all landmarks) rejected: inflated by age (88-91%).
+- **2026-11-03 (6b)** Cox and RSF trained on landmarks every 14 days (about 18k rows) with alive batteries censored; GPC on 2,000 sampled landmarks; availability features kept out of headline models (ablation only).
+- **2026-11-03 (env)** numpy stays pinned at 1.26.4 (BattGP/torch code breaks on numpy 2.5); scikit-survival 0.28 needs `np.trapezoid`, shimmed in `sunfix/bench.py`.
